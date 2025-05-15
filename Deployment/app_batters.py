@@ -82,7 +82,7 @@ st.markdown("### How do the predictions compare to 2024 stats thus far?")
 st.markdown("###### Updated: May 16, 2025")
 
 # 2024 batter dataframe
-batter_2024_df = pd.read_csv('batting_merged_2024.csv', index_col = 0)
+batter_2024_df = pd.read_csv('batting_merged_2024', index_col = 0)
 # reformat 2024 batter df for model prediction
 df_to_predict = batter_2024_df.drop(columns = ['Name', '2024 Salary'])
 
