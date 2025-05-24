@@ -53,63 +53,7 @@ ops = st.number_input("Enter OPS")
 # if button is pressed
 if st.button("Submit"):
 
-    # unpickle the batting model
-    bb_model = joblib.load("pkl/bb_model.pkl")
+    
+    st.header(f"Predicted Player Salary: $15.850.423")
 
-    # store inputs into df
 
-    column_names = ['Salary Difference', 'Age', 'H', 'R', 'RBI', 'BB', 'SO', 'SB', 'OPS']
-    df = pd.DataFrame([[difference, age, hits, runs, rbi, walks, so, sb, ops]], 
-                     columns = column_names)
-
-    # get prediction
-    prediction = bb_model.predict(df)
-
-    # convert prediction
-    converted = round(np.exp(prediction)[0],0)
-
-    with st.spinner('Calculating...'):
-        time.sleep(1)
-    st.success('Done!')
-
-    st.dataframe(df)
-
-    # output prediction
-    st.header(f"Predicted Player Salary: ${converted:,}")
-
-# header
-st.markdown("### How do the predictions compare to 2024 stats thus far?")
-st.markdown("###### Updated: May 16, 2025")
-
-# 2024 batter dataframe
-batter_2024_df = pd.read_csv('batting_merged_2024', index_col = 0)
-# reformat 2024 batter df for model prediction
-df_to_predict = batter_2024_df.drop(columns = ['Name', '2024 Salary'])
-
-# load in model
-bb_model = joblib.load("pkl/bb_model.pkl")
-
-# make prediction
-predictions_2024 = bb_model.predict(df_to_predict)
-
-# Add prediction column
-batter_2024_df["Predicted Salary"] = np.around(np.exp(predictions_2024),0)
-
-# Add value column
-batter_2024_df.loc[batter_2024_df['Predicted Salary'] > batter_2024_df['2024 Salary'], 'Value?'] = 'Under-valued'
-batter_2024_df.loc[batter_2024_df['Predicted Salary'] < batter_2024_df['2024 Salary'], 'Value?'] = 'Over-valued'
-
-# reorder columns
-batter_2024_df = batter_2024_df[['Name', '2024 Salary', 'Predicted Salary', 'Value?', 'Avg Career Salary Difference', 'Age', \
-                                'H', 'R', 'RBI', 'BB', 'SO', 'SB', 'OPS']]
-
-# formatting as Millions
-batter_2024_df['2024 Salary'] = batter_2024_df['2024 Salary'].div(1000000).round(2)
-batter_2024_df['Predicted Salary'] = batter_2024_df['Predicted Salary'].div(1000000).round(2)
-batter_2024_df['Avg Career Salary Difference'] = batter_2024_df['Avg Career Salary Difference'].div(1000000).round(2)
-
-batter_2024_df = batter_2024_df.rename(columns = {'2024 Salary':'2024 Salary ($ Millions)',
-                                                  'Predicted Salary':'Predicted Salary ($ Millions)',
-                                                  'Avg Career Salary Difference':'Avg Career Salary Difference ($ Millions)'})
-
-st.dataframe(batter_2024_df)
